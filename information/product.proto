@@ -41,9 +41,12 @@ message RequestUpdate {
 
 message RequestGetAll{}
 
+message ResponseDelete{}
+
 service ProductService{
     rpc Create(Product) returns (Response);
     rpc Get(RequestById) returns (Product);
     rpc GetAll(RequestGetAll) returns (ResponseGetAll);
     rpc Update(RequestUpdate) returns (Response);
+    rpc Delete(RequestById) returns (ResponseDelete);
 }
