@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package proto.information.table;
+
+option go_package = "information/table/";
+
+message Table {
+    uint64 id = 1;
+    uint64 establishmen_id = 2;
+    uint64 user_id = 3;
+}
+
+message RequestById {
+    uint64 id = 1;
+}
+
+message RequestAdd{
+    uint64 id = 1;
+    uint32 quantity = 2;
+}
+
+message Response {
+    uint64 id = 1;
+}
+
+message ResponseGetAll {
+    repeated Table tables = 1;
+}
+
+message RequestUpdate {
+    uint64 id = 1;
+    Table table = 2;
+}
+
+message ResponseStatus{}
+
+message ResponseDelete{}
+
+message ResponseAdd{}
+
+service TableService {
+    rpc AddTable(RequestById) returns (ResponseAdd);
+    rpc AddTables(RequestAdd) returns (ResponseAdd);
+    rpc GetFromEstablishment(RequestById) returns (ResponseGetAll);
+    rpc ChangeStatus(Table) returns (ResponseStatus);
+    rpc RemoveFromEstablishment(RequestById) returns (ResponseDelete);
+}
