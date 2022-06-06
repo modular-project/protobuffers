@@ -9,28 +9,29 @@ message Product {
     string url = 2;
     string description = 3;
     float price = 4;
+    uint64 id = 5;
 }
 
 message RequestById {
     uint64 id = 1;
 }
 
+message RequestGetInBatch{
+    repeated uint64 ids = 1;
+}
+
 message Response {
-    oneof response{
-        string err = 1;
-        uint64 id = 2;
-    }
+    // string err = 1;
+    uint64 id = 2;
 }
 
 message ResponseGet {
-    oneof response{
-        string err = 1;
-        Product product = 2;
-    }
+        // string err = 1;
+    Product product = 2;
 }
 
 message ResponseGetAll {
-    string err = 1;
+    // string err = 1;
     repeated Product products = 2;
 }
 
@@ -47,6 +48,7 @@ service ProductService{
     rpc Create(Product) returns (Response);
     rpc Get(RequestById) returns (Product);
     rpc GetAll(RequestGetAll) returns (ResponseGetAll);
+    rpc GetInBatch(RequestGetInBatch) returns (ResponseGetAll);
     rpc Update(RequestUpdate) returns (Response);
     rpc Delete(RequestById) returns (ResponseDelete);
 }

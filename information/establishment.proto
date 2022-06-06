@@ -8,6 +8,11 @@ message Establishment {
     uint64 id = 1;
 }
 
+message RequestCreate {
+    Establishment establishment = 1;
+    uint32 table_quantity = 2;
+}
+
 message RequestById {
     uint64 id = 1;
 }
@@ -25,16 +30,17 @@ message ResponseGetAll {
 }
 
 message RequestUpdate {
-    uint64 id = 1;
     Establishment establishment = 2;
 }
 
-message RequestGetAll{}
+message RequestGetAll{
+    repeated uint64 ids = 1;
+}
 
 message ResponseDelete{}
 
 service EstablishmentService {
-    rpc Create(Establishment) returns (Response);
+    rpc Create(RequestCreate) returns (Response);
     rpc Get(RequestById) returns (Establishment);
     rpc GetAll(RequestGetAll) returns (ResponseGetAll);
     rpc Update(RequestUpdate) returns (Response);

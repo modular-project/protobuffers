@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+package proto.order.order;
+
+option go_package = "github.com/modular-project/protobuffers/order/order";
+
+// Search Options
+
+enum Sort {
+    ASCENDING = 0;
+    DESCENDING = 1;
+}
+
+enum OrderBy {
+    DATE = 0;
+    PRICE = 1;
+    ESTABLISHMENT = 2;
+    STATUS = 3;
+    TYPE = 4;
+}
+
+message Default{
+    uint32 limit = 1;
+    uint32 offset = 2;
+    Sort sort = 3;
+}
+
+message SearchOrders {
+    Default default = 1;
+    OrderBy order_by = 2;
+    repeated uint64 establishments = 3;
+    repeated bool status = 4;
+    repeated uint32 types = 5;
+}
+
+// Structs for Orders
+
+message OrderProduct {
+    uint64 id = 1;
+    uint64 product_id = 2;
+    uint32 quantity = 3;
+    // uint32 state_id = 4;
+}
+
+message Order {
+    uint64 id = 1;
+    uint64 establishment_id =2;
+    bool is_ready =3;
+    uint64 total = 4;
+    repeated OrderProduct order_products = 5;
+    oneof type {
+        RemoteOrder remote_order = 6;
+        LocalOrder local_order =7;
+    }
+    uint64 create_at = 8;
+}
+
+message RemoteOrder {
+    uint64 address_id =1;
+    uint64 user_id =2; 
+}
+
+message LocalOrder {
+    uint64 table_id = 1;
+    uint64 employee_id = 2;
+}
+
+// Request
+
+message OrdersByUserRequest {
+    Default default = 1;
+    uint64 id = 2;
+}
+
+message OrdersRequest {
+    SearchOrders search = 1;
+}
+
+message AddProductsToOrderRequest {
+    uint64 id = 1;
+    OrderProduct products = 2;
+}
+
+message PayOrderRequest {
+    uint64 orde_id = 1;
+    uint64 user_id = 2;
+}
+
+// Responses
+
+message OrdersResponse {
+    repeated Order orders =1;
+}
+
+message ID {
+    uint64 id = 1;
+}
+
+message OrderProductsResponse {
+    repeated OrderProduct order_products =1;
+}
+
+message AddProductsToOrderResponse {}
+
+message PayOrderResponse{}
+
+service OrderService {
+    rpc CreateLocalOrder(Order) returns (ID);
+    rpc CreateDeliveryOrder(Order) returns (ID);
+    rpc GetOrdersByUser(OrdersByUserRequest) returns (OrdersResponse);
+    rpc GetOrdersByKitchen(ID) returns (OrderProductsResponse);
+    rpc GetOrders(OrdersRequest) returns (OrdersResponse);
+    rpc GetOrdersByEstablishment(OrdersRequest) returns (OrdersResponse);
+    rpc GetOrderByWaiter(ID) returns (OrdersResponse);
+    rpc AddPorudctsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
+    rpc PayLocalOrder(PayOrderRequest) returns (PayOrderResponse);
+}
