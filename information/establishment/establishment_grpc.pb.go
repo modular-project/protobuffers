@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EstablishmentServiceClient interface {
-	Create(ctx context.Context, in *Establishment, opts ...grpc.CallOption) (*Response, error)
+	Create(ctx context.Context, in *RequestCreate, opts ...grpc.CallOption) (*Response, error)
 	Get(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*Establishment, error)
 	GetAll(ctx context.Context, in *RequestGetAll, opts ...grpc.CallOption) (*ResponseGetAll, error)
 	Update(ctx context.Context, in *RequestUpdate, opts ...grpc.CallOption) (*Response, error)
@@ -37,7 +37,7 @@ func NewEstablishmentServiceClient(cc grpc.ClientConnInterface) EstablishmentSer
 	return &establishmentServiceClient{cc}
 }
 
-func (c *establishmentServiceClient) Create(ctx context.Context, in *Establishment, opts ...grpc.CallOption) (*Response, error) {
+func (c *establishmentServiceClient) Create(ctx context.Context, in *RequestCreate, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/proto.information.establishment.EstablishmentService/Create", in, out, opts...)
 	if err != nil {
@@ -86,7 +86,7 @@ func (c *establishmentServiceClient) Delete(ctx context.Context, in *RequestById
 // All implementations must embed UnimplementedEstablishmentServiceServer
 // for forward compatibility
 type EstablishmentServiceServer interface {
-	Create(context.Context, *Establishment) (*Response, error)
+	Create(context.Context, *RequestCreate) (*Response, error)
 	Get(context.Context, *RequestById) (*Establishment, error)
 	GetAll(context.Context, *RequestGetAll) (*ResponseGetAll, error)
 	Update(context.Context, *RequestUpdate) (*Response, error)
@@ -98,7 +98,7 @@ type EstablishmentServiceServer interface {
 type UnimplementedEstablishmentServiceServer struct {
 }
 
-func (UnimplementedEstablishmentServiceServer) Create(context.Context, *Establishment) (*Response, error) {
+func (UnimplementedEstablishmentServiceServer) Create(context.Context, *RequestCreate) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
 func (UnimplementedEstablishmentServiceServer) Get(context.Context, *RequestById) (*Establishment, error) {
@@ -127,7 +127,7 @@ func RegisterEstablishmentServiceServer(s grpc.ServiceRegistrar, srv Establishme
 }
 
 func _EstablishmentService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Establishment)
+	in := new(RequestCreate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func _EstablishmentService_Create_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/proto.information.establishment.EstablishmentService/Create",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(EstablishmentServiceServer).Create(ctx, req.(*Establishment))
+		return srv.(EstablishmentServiceServer).Create(ctx, req.(*RequestCreate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
