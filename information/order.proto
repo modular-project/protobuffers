@@ -13,5 +13,5 @@ message ValidateOrderRequest {
 message ValidateOrderResponse {}
 
 service ValidateOrder {
-    rpc ValidateLocalOrder(ValidateOrderRequest) returns (ValidateOrderResponse);
+    rpc ValidateOrder(ValidateOrderRequest) returns (ValidateOrderResponse);
 }
