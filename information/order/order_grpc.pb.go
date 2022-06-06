@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ValidateOrderClient interface {
-	ValidateLocalOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateOrderResponse, error)
+	ValidateOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateOrderResponse, error)
 }
 
 type validateOrderClient struct {
@@ -33,9 +33,9 @@ func NewValidateOrderClient(cc grpc.ClientConnInterface) ValidateOrderClient {
 	return &validateOrderClient{cc}
 }
 
-func (c *validateOrderClient) ValidateLocalOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateOrderResponse, error) {
+func (c *validateOrderClient) ValidateOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateOrderResponse, error) {
 	out := new(ValidateOrderResponse)
-	err := c.cc.Invoke(ctx, "/proto.information.order.ValidateOrder/ValidateLocalOrder", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.information.order.ValidateOrder/ValidateOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (c *validateOrderClient) ValidateLocalOrder(ctx context.Context, in *Valida
 // All implementations must embed UnimplementedValidateOrderServer
 // for forward compatibility
 type ValidateOrderServer interface {
-	ValidateLocalOrder(context.Context, *ValidateOrderRequest) (*ValidateOrderResponse, error)
+	ValidateOrder(context.Context, *ValidateOrderRequest) (*ValidateOrderResponse, error)
 	mustEmbedUnimplementedValidateOrderServer()
 }
 
@@ -54,8 +54,8 @@ type ValidateOrderServer interface {
 type UnimplementedValidateOrderServer struct {
 }
 
-func (UnimplementedValidateOrderServer) ValidateLocalOrder(context.Context, *ValidateOrderRequest) (*ValidateOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ValidateLocalOrder not implemented")
+func (UnimplementedValidateOrderServer) ValidateOrder(context.Context, *ValidateOrderRequest) (*ValidateOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateOrder not implemented")
 }
 func (UnimplementedValidateOrderServer) mustEmbedUnimplementedValidateOrderServer() {}
 
@@ -70,20 +70,20 @@ func RegisterValidateOrderServer(s grpc.ServiceRegistrar, srv ValidateOrderServe
 	s.RegisterService(&ValidateOrder_ServiceDesc, srv)
 }
 
-func _ValidateOrder_ValidateLocalOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ValidateOrder_ValidateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ValidateOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ValidateOrderServer).ValidateLocalOrder(ctx, in)
+		return srv.(ValidateOrderServer).ValidateOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.information.order.ValidateOrder/ValidateLocalOrder",
+		FullMethod: "/proto.information.order.ValidateOrder/ValidateOrder",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ValidateOrderServer).ValidateLocalOrder(ctx, req.(*ValidateOrderRequest))
+		return srv.(ValidateOrderServer).ValidateOrder(ctx, req.(*ValidateOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +96,8 @@ var ValidateOrder_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ValidateOrderServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "ValidateLocalOrder",
-			Handler:    _ValidateOrder_ValidateLocalOrder_Handler,
+			MethodName: "ValidateOrder",
+			Handler:    _ValidateOrder_ValidateOrder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
