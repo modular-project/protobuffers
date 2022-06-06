@@ -25,6 +25,7 @@ type ProductServiceClient interface {
 	Create(ctx context.Context, in *Product, opts ...grpc.CallOption) (*Response, error)
 	Get(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*Product, error)
 	GetAll(ctx context.Context, in *RequestGetAll, opts ...grpc.CallOption) (*ResponseGetAll, error)
+	GetInBatch(ctx context.Context, in *RequestGetInBatch, opts ...grpc.CallOption) (*ResponseGetAll, error)
 	Update(ctx context.Context, in *RequestUpdate, opts ...grpc.CallOption) (*Response, error)
 	Delete(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*ResponseDelete, error)
 }
@@ -64,6 +65,15 @@ func (c *productServiceClient) GetAll(ctx context.Context, in *RequestGetAll, op
 	return out, nil
 }
 
+func (c *productServiceClient) GetInBatch(ctx context.Context, in *RequestGetInBatch, opts ...grpc.CallOption) (*ResponseGetAll, error) {
+	out := new(ResponseGetAll)
+	err := c.cc.Invoke(ctx, "/proto.information.product.ProductService/GetInBatch", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productServiceClient) Update(ctx context.Context, in *RequestUpdate, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/proto.information.product.ProductService/Update", in, out, opts...)
@@ -89,6 +99,7 @@ type ProductServiceServer interface {
 	Create(context.Context, *Product) (*Response, error)
 	Get(context.Context, *RequestById) (*Product, error)
 	GetAll(context.Context, *RequestGetAll) (*ResponseGetAll, error)
+	GetInBatch(context.Context, *RequestGetInBatch) (*ResponseGetAll, error)
 	Update(context.Context, *RequestUpdate) (*Response, error)
 	Delete(context.Context, *RequestById) (*ResponseDelete, error)
 	mustEmbedUnimplementedProductServiceServer()
@@ -106,6 +117,9 @@ func (UnimplementedProductServiceServer) Get(context.Context, *RequestById) (*Pr
 }
 func (UnimplementedProductServiceServer) GetAll(context.Context, *RequestGetAll) (*ResponseGetAll, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
+}
+func (UnimplementedProductServiceServer) GetInBatch(context.Context, *RequestGetInBatch) (*ResponseGetAll, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInBatch not implemented")
 }
 func (UnimplementedProductServiceServer) Update(context.Context, *RequestUpdate) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
@@ -180,6 +194,24 @@ func _ProductService_GetAll_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProductService_GetInBatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestGetInBatch)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServiceServer).GetInBatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.information.product.ProductService/GetInBatch",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServiceServer).GetInBatch(ctx, req.(*RequestGetInBatch))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProductService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RequestUpdate)
 	if err := dec(in); err != nil {
@@ -234,6 +266,10 @@ var ProductService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAll",
 			Handler:    _ProductService_GetAll_Handler,
+		},
+		{
+			MethodName: "GetInBatch",
+			Handler:    _ProductService_GetInBatch_Handler,
 		},
 		{
 			MethodName: "Update",

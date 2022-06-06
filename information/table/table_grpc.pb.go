@@ -26,7 +26,7 @@ type TableServiceClient interface {
 	AddTables(ctx context.Context, in *RequestAdd, opts ...grpc.CallOption) (*ResponseAdd, error)
 	GetFromEstablishment(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*ResponseGetAll, error)
 	ChangeStatus(ctx context.Context, in *Table, opts ...grpc.CallOption) (*ResponseStatus, error)
-	RemoveFromEstablishment(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*ResponseDelete, error)
+	RemoveFromEstablishment(ctx context.Context, in *RequestDelete, opts ...grpc.CallOption) (*ResponseDelete, error)
 }
 
 type tableServiceClient struct {
@@ -73,7 +73,7 @@ func (c *tableServiceClient) ChangeStatus(ctx context.Context, in *Table, opts .
 	return out, nil
 }
 
-func (c *tableServiceClient) RemoveFromEstablishment(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*ResponseDelete, error) {
+func (c *tableServiceClient) RemoveFromEstablishment(ctx context.Context, in *RequestDelete, opts ...grpc.CallOption) (*ResponseDelete, error) {
 	out := new(ResponseDelete)
 	err := c.cc.Invoke(ctx, "/proto.information.table.TableService/RemoveFromEstablishment", in, out, opts...)
 	if err != nil {
@@ -90,7 +90,7 @@ type TableServiceServer interface {
 	AddTables(context.Context, *RequestAdd) (*ResponseAdd, error)
 	GetFromEstablishment(context.Context, *RequestById) (*ResponseGetAll, error)
 	ChangeStatus(context.Context, *Table) (*ResponseStatus, error)
-	RemoveFromEstablishment(context.Context, *RequestById) (*ResponseDelete, error)
+	RemoveFromEstablishment(context.Context, *RequestDelete) (*ResponseDelete, error)
 	mustEmbedUnimplementedTableServiceServer()
 }
 
@@ -110,7 +110,7 @@ func (UnimplementedTableServiceServer) GetFromEstablishment(context.Context, *Re
 func (UnimplementedTableServiceServer) ChangeStatus(context.Context, *Table) (*ResponseStatus, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeStatus not implemented")
 }
-func (UnimplementedTableServiceServer) RemoveFromEstablishment(context.Context, *RequestById) (*ResponseDelete, error) {
+func (UnimplementedTableServiceServer) RemoveFromEstablishment(context.Context, *RequestDelete) (*ResponseDelete, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromEstablishment not implemented")
 }
 func (UnimplementedTableServiceServer) mustEmbedUnimplementedTableServiceServer() {}
@@ -199,7 +199,7 @@ func _TableService_ChangeStatus_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _TableService_RemoveFromEstablishment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestById)
+	in := new(RequestDelete)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -211,7 +211,7 @@ func _TableService_RemoveFromEstablishment_Handler(srv interface{}, ctx context.
 		FullMethod: "/proto.information.table.TableService/RemoveFromEstablishment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TableServiceServer).RemoveFromEstablishment(ctx, req.(*RequestById))
+		return srv.(TableServiceServer).RemoveFromEstablishment(ctx, req.(*RequestDelete))
 	}
 	return interceptor(ctx, in, info, handler)
 }
