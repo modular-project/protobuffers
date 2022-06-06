@@ -34,14 +34,16 @@ message RequestUpdate {
 
 message ResponseStatus{}
 
-message ResponseDelete{}
+message ResponseDelete{
+    uint32 deleted = 1;
+}
 
 message ResponseAdd{}
 
 message RequestDelete{
     uint32 quantity = 1;
     uint64 establishmen_id = 2;
-    uint64 user_id = 3;
+    //uint64 user_id = 3;
 }
 
 service TableService {
