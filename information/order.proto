@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package proto.information.order;
+
+option go_package = "information/order/";
+
+import "order/order.proto";
+
+message ValidateOrderRequest {
+    proto.order.order.Order order = 1;
+}
+
+message ValidateOrderResponse {}
+
+service ValidateOrder {
+    rpc ValidateLocalOrder(ValidateOrderRequest) returns (ValidateOrderResponse);
+}
