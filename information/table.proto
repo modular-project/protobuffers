@@ -38,7 +38,9 @@ message ResponseDelete{
     uint32 deleted = 1;
 }
 
-message ResponseAdd{}
+message ResponseAdd{
+    repeated uint64 ids = 1;
+}
 
 message RequestDelete{
     uint32 quantity = 1;
