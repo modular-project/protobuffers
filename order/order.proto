@@ -19,18 +19,37 @@ enum OrderBy {
     TYPE = 4;
 }
 
+enum Status {
+    NONE = 0;
+    WITHOUTPAY = 1;
+    PENDING = 2;
+    COMPLETED = 3;
+}
+
+enum OrderType {
+    INVALID = 0;
+    LOCAL = 1;
+    DELIVERY = 2;
+}
+
+message SearchBy{
+    OrderBy by = 1;
+    Sort sort = 2;
+}
+
 message Default{
     uint32 limit = 1;
     uint32 offset = 2;
-    Sort sort = 3;
+    repeated SearchBy search_by = 3;
 }
 
 message SearchOrders {
     Default default = 1;
-    OrderBy order_by = 2;
     repeated uint64 establishments = 3;
-    repeated bool status = 4;
-    repeated uint32 types = 5;
+    repeated Status status = 4;
+    repeated OrderType types = 5;
+    repeated uint64 users = 6;
+    repeated float range = 7;
 }
 
 // Structs for Orders
@@ -45,8 +64,8 @@ message OrderProduct {
 message Order {
     uint64 id = 1;
     uint64 establishment_id =2;
-    bool is_ready =3;
-    uint64 total = 4;
+    Status status =3;
+    float total = 4;
     repeated OrderProduct order_products = 5;
     oneof type {
         RemoteOrder remote_order = 6;
