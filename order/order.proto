@@ -58,7 +58,7 @@ message OrderProduct {
     uint64 id = 1;
     uint64 product_id = 2;
     uint32 quantity = 3;
-    // uint32 state_id = 4;
+    bool is_ready = 4;
 }
 
 message Order {
