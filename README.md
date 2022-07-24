@@ -4,3 +4,4 @@ This module saves all protobuffers of the project, run the following commands to
 
 - protoc --go_out=. --go-grpc_out=. information/*.proto
 - protoc -I. --go_out=paths=source_relative:./order --go-grpc_out=paths=source_relative:./order order/*.proto
+- protoc -I. --go_out=paths=source_relative:./address --go-grpc_out=paths=source_relative:./address address/*.proto

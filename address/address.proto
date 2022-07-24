@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package proto.address.address;
+
+option go_package = "github.com/modular-project/protobuffers/address/address";
+
+message Default{
+    uint32 limit = 1;
+    uint32 offset = 2;
+}
+
+message SearchAddress{
+    Default default = 1;
+}
+
+message Location {
+    float long = 1;
+    float lat = 2;
+}
+
+message Address {
+    bytes id = 1;
+    string line1 = 2;
+    string line2 = 3;
+    string city = 4;
+    string pc = 5;
+    string state = 6;
+    string country = 7;
+}
+
+message ID {
+    bytes id = 1;
+}
+
+message Delivery {
+    Address address = 1;
+    uint64 user_id = 2;
+}
+
+message User {
+    uint64 id = 1;
+    bytes address_id = 2;
+}
+
+message ResponseAll {
+    repeated Address address = 1;
+}
+
+message ResponseDelete{}
+
+service AddressService {
+    rpc CreateDelivery(Delivery) returns (ID);
+    rpc GetAllByUser(User) returns (ResponseAll);
+    rpc DeleteByID(User) returns (ResponseDelete);
+    rpc GetByID(User) returns (Address);
+    rpc CreateEstablishment(Address) returns (ID);
+    rpc DeleteEstablishment(ID) returns (ResponseDelete);
+    rpc Search(SearchAddress) returns (ResponseAll);
+    rpc Nearest(User) returns (ID);
+}
