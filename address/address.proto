@@ -19,7 +19,7 @@ message Location {
 }
 
 message Address {
-    bytes id = 1;
+    string id = 1;
     string line1 = 2;
     string line2 = 3;
     string city = 4;
@@ -29,7 +29,7 @@ message Address {
 }
 
 message ID {
-    bytes id = 1;
+    string id = 1;
 }
 
 message Delivery {
@@ -39,7 +39,7 @@ message Delivery {
 
 message User {
     uint64 id = 1;
-    bytes address_id = 2;
+    string address_id = 2;
 }
 
 message ResponseAll {
