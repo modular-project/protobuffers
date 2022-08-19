@@ -26,6 +26,7 @@ type AddressServiceClient interface {
 	GetAllByUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*ResponseAll, error)
 	DeleteByID(ctx context.Context, in *User, opts ...grpc.CallOption) (*ResponseDelete, error)
 	GetByID(ctx context.Context, in *User, opts ...grpc.CallOption) (*Address, error)
+	GetAddByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Address, error)
 	CreateEstablishment(ctx context.Context, in *Address, opts ...grpc.CallOption) (*ID, error)
 	DeleteEstablishment(ctx context.Context, in *ID, opts ...grpc.CallOption) (*ResponseDelete, error)
 	Search(ctx context.Context, in *SearchAddress, opts ...grpc.CallOption) (*ResponseAll, error)
@@ -76,6 +77,15 @@ func (c *addressServiceClient) GetByID(ctx context.Context, in *User, opts ...gr
 	return out, nil
 }
 
+func (c *addressServiceClient) GetAddByID(ctx context.Context, in *ID, opts ...grpc.CallOption) (*Address, error) {
+	out := new(Address)
+	err := c.cc.Invoke(ctx, "/proto.address.address.AddressService/GetAddByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *addressServiceClient) CreateEstablishment(ctx context.Context, in *Address, opts ...grpc.CallOption) (*ID, error) {
 	out := new(ID)
 	err := c.cc.Invoke(ctx, "/proto.address.address.AddressService/CreateEstablishment", in, out, opts...)
@@ -120,6 +130,7 @@ type AddressServiceServer interface {
 	GetAllByUser(context.Context, *User) (*ResponseAll, error)
 	DeleteByID(context.Context, *User) (*ResponseDelete, error)
 	GetByID(context.Context, *User) (*Address, error)
+	GetAddByID(context.Context, *ID) (*Address, error)
 	CreateEstablishment(context.Context, *Address) (*ID, error)
 	DeleteEstablishment(context.Context, *ID) (*ResponseDelete, error)
 	Search(context.Context, *SearchAddress) (*ResponseAll, error)
@@ -142,6 +153,9 @@ func (UnimplementedAddressServiceServer) DeleteByID(context.Context, *User) (*Re
 }
 func (UnimplementedAddressServiceServer) GetByID(context.Context, *User) (*Address, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")
+}
+func (UnimplementedAddressServiceServer) GetAddByID(context.Context, *ID) (*Address, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAddByID not implemented")
 }
 func (UnimplementedAddressServiceServer) CreateEstablishment(context.Context, *Address) (*ID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateEstablishment not implemented")
@@ -240,6 +254,24 @@ func _AddressService_GetByID_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AddressService_GetAddByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AddressServiceServer).GetAddByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.address.address.AddressService/GetAddByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AddressServiceServer).GetAddByID(ctx, req.(*ID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AddressService_CreateEstablishment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Address)
 	if err := dec(in); err != nil {
@@ -334,6 +366,10 @@ var AddressService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetByID",
 			Handler:    _AddressService_GetByID_Handler,
+		},
+		{
+			MethodName: "GetAddByID",
+			Handler:    _AddressService_GetAddByID_Handler,
 		},
 		{
 			MethodName: "CreateEstablishment",

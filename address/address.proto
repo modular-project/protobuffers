@@ -53,6 +53,7 @@ service AddressService {
     rpc GetAllByUser(User) returns (ResponseAll);
     rpc DeleteByID(User) returns (ResponseDelete);
     rpc GetByID(User) returns (Address);
+    rpc GetAddByID(ID) returns (Address);
     rpc CreateEstablishment(Address) returns (ID);
     rpc DeleteEstablishment(ID) returns (ResponseDelete);
     rpc Search(SearchAddress) returns (ResponseAll);
