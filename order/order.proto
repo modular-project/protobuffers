@@ -32,6 +32,11 @@ enum OrderType {
     DELIVERY = 2;
 }
 
+enum PaymentMethod {
+    PAYPAL = 0;
+    CASH = 1;
+}
+
 message SearchBy{
     OrderBy by = 1;
     Sort sort = 2;
@@ -87,8 +92,7 @@ message LocalOrder {
 // Request
 
 message OrdersByUserRequest {
-    Default default = 1;
-    uint64 id = 2;
+    SearchOrders search = 1;
 }
 
 message OrdersRequest {
@@ -103,6 +107,12 @@ message AddProductsToOrderRequest {
 message PayOrderRequest {
     uint64 orde_id = 1;
     uint64 user_id = 2;
+    OrderType order_type = 3;
+    PaymentMethod payment = 4;
+}
+
+message CapturePaymentRequest {
+    string id = 1;
 }
 
 // Responses
@@ -121,7 +131,14 @@ message OrderProductsResponse {
 
 message AddProductsToOrderResponse {}
 
-message PayOrderResponse{}
+message PayOrderResponse{
+    string id = 1;
+    repeated string links = 2;
+}
+
+message CapturePaymentResponse {
+    string status = 1;
+}
 
 service OrderService {
     rpc CreateLocalOrder(Order) returns (ID);
@@ -132,5 +149,6 @@ service OrderService {
     rpc GetOrdersByEstablishment(OrdersRequest) returns (OrdersResponse);
     rpc GetOrderByWaiter(ID) returns (OrdersResponse);
     rpc AddPorudctsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
-    rpc PayLocalOrder(PayOrderRequest) returns (PayOrderResponse);
+    rpc PayOrder(PayOrderRequest) returns (PayOrderResponse);
+    rpc CapturePayment(CapturePaymentRequest) returns (CapturePaymentResponse);
 }
