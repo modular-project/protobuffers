@@ -29,7 +29,8 @@ type OrderServiceClient interface {
 	GetOrders(ctx context.Context, in *OrdersRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrdersByEstablishment(ctx context.Context, in *OrdersRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrderByWaiter(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrdersResponse, error)
-	AddPorudctsToOrder(ctx context.Context, in *AddProductsToOrderRequest, opts ...grpc.CallOption) (*AddProductsToOrderResponse, error)
+	GetOrderByID(ctx context.Context, in *GetOrderByIDRequest, opts ...grpc.CallOption) (*OrderResponse, error)
+	AddProductsToOrder(ctx context.Context, in *AddProductsToOrderRequest, opts ...grpc.CallOption) (*AddProductsToOrderResponse, error)
 	PayOrder(ctx context.Context, in *PayOrderRequest, opts ...grpc.CallOption) (*PayOrderResponse, error)
 	CapturePayment(ctx context.Context, in *CapturePaymentRequest, opts ...grpc.CallOption) (*CapturePaymentResponse, error)
 }
@@ -105,9 +106,18 @@ func (c *orderServiceClient) GetOrderByWaiter(ctx context.Context, in *ID, opts 
 	return out, nil
 }
 
-func (c *orderServiceClient) AddPorudctsToOrder(ctx context.Context, in *AddProductsToOrderRequest, opts ...grpc.CallOption) (*AddProductsToOrderResponse, error) {
+func (c *orderServiceClient) GetOrderByID(ctx context.Context, in *GetOrderByIDRequest, opts ...grpc.CallOption) (*OrderResponse, error) {
+	out := new(OrderResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/GetOrderByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderServiceClient) AddProductsToOrder(ctx context.Context, in *AddProductsToOrderRequest, opts ...grpc.CallOption) (*AddProductsToOrderResponse, error) {
 	out := new(AddProductsToOrderResponse)
-	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/AddPorudctsToOrder", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/AddProductsToOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +153,8 @@ type OrderServiceServer interface {
 	GetOrders(context.Context, *OrdersRequest) (*OrdersResponse, error)
 	GetOrdersByEstablishment(context.Context, *OrdersRequest) (*OrdersResponse, error)
 	GetOrderByWaiter(context.Context, *ID) (*OrdersResponse, error)
-	AddPorudctsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error)
+	GetOrderByID(context.Context, *GetOrderByIDRequest) (*OrderResponse, error)
+	AddProductsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error)
 	PayOrder(context.Context, *PayOrderRequest) (*PayOrderResponse, error)
 	CapturePayment(context.Context, *CapturePaymentRequest) (*CapturePaymentResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
@@ -174,8 +185,11 @@ func (UnimplementedOrderServiceServer) GetOrdersByEstablishment(context.Context,
 func (UnimplementedOrderServiceServer) GetOrderByWaiter(context.Context, *ID) (*OrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrderByWaiter not implemented")
 }
-func (UnimplementedOrderServiceServer) AddPorudctsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddPorudctsToOrder not implemented")
+func (UnimplementedOrderServiceServer) GetOrderByID(context.Context, *GetOrderByIDRequest) (*OrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrderByID not implemented")
+}
+func (UnimplementedOrderServiceServer) AddProductsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddProductsToOrder not implemented")
 }
 func (UnimplementedOrderServiceServer) PayOrder(context.Context, *PayOrderRequest) (*PayOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PayOrder not implemented")
@@ -322,20 +336,38 @@ func _OrderService_GetOrderByWaiter_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OrderService_AddPorudctsToOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _OrderService_GetOrderByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrderByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetOrderByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderService/GetOrderByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetOrderByID(ctx, req.(*GetOrderByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderService_AddProductsToOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddProductsToOrderRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OrderServiceServer).AddPorudctsToOrder(ctx, in)
+		return srv.(OrderServiceServer).AddProductsToOrder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.order.order.OrderService/AddPorudctsToOrder",
+		FullMethod: "/proto.order.order.OrderService/AddProductsToOrder",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).AddPorudctsToOrder(ctx, req.(*AddProductsToOrderRequest))
+		return srv.(OrderServiceServer).AddProductsToOrder(ctx, req.(*AddProductsToOrderRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -412,8 +444,12 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OrderService_GetOrderByWaiter_Handler,
 		},
 		{
-			MethodName: "AddPorudctsToOrder",
-			Handler:    _OrderService_AddPorudctsToOrder_Handler,
+			MethodName: "GetOrderByID",
+			Handler:    _OrderService_GetOrderByID_Handler,
+		},
+		{
+			MethodName: "AddProductsToOrder",
+			Handler:    _OrderService_AddProductsToOrder_Handler,
 		},
 		{
 			MethodName: "PayOrder",

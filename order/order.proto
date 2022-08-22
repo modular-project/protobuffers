@@ -101,7 +101,7 @@ message OrdersRequest {
 
 message AddProductsToOrderRequest {
     uint64 id = 1;
-    OrderProduct products = 2;
+    repeated OrderProduct products = 2;
 }
 
 message PayOrderRequest {
@@ -115,10 +115,19 @@ message CapturePaymentRequest {
     string id = 1;
 }
 
+message GetOrderByIDRequest {
+    uint64 order_id = 1;
+    uint64 user_id = 2;
+} 
+
 // Responses
 
 message OrdersResponse {
     repeated Order orders =1;
+}
+
+message OrderResponse {
+    Order order = 1;
 }
 
 message ID {
@@ -148,7 +157,8 @@ service OrderService {
     rpc GetOrders(OrdersRequest) returns (OrdersResponse);
     rpc GetOrdersByEstablishment(OrdersRequest) returns (OrdersResponse);
     rpc GetOrderByWaiter(ID) returns (OrdersResponse);
-    rpc AddPorudctsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
+    rpc GetOrderByID(GetOrderByIDRequest) returns (OrderResponse);
+    rpc AddProductsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
     rpc PayOrder(PayOrderRequest) returns (PayOrderResponse);
     rpc CapturePayment(CapturePaymentRequest) returns (CapturePaymentResponse);
 }
