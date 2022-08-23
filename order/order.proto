@@ -102,13 +102,21 @@ message OrdersRequest {
 message AddProductsToOrderRequest {
     uint64 id = 1;
     repeated OrderProduct products = 2;
+    float total = 3; 
 }
 
-message PayOrderRequest {
+message PayLocalRequest {
+    uint64 orde_id = 1;
+    uint64 employee_id = 2;
+    PaymentMethod payment = 3;
+}
+
+message PayDeliveryRequest {
     uint64 orde_id = 1;
     uint64 user_id = 2;
-    OrderType order_type = 3;
-    PaymentMethod payment = 4;
+    PaymentMethod payment = 3;
+    string address = 4;
+    uint64 establishment_id = 5;
 }
 
 message CapturePaymentRequest {
@@ -119,6 +127,10 @@ message GetOrderByIDRequest {
     uint64 order_id = 1;
     uint64 user_id = 2;
 } 
+
+message CompleteProductRequest {
+    uint64 id = 1;
+}
 
 // Responses
 
@@ -142,14 +154,17 @@ message AddProductsToOrderResponse {
     repeated uint64 ids = 1;
 }
 
-message PayOrderResponse{
+message PayDeliveryResponse{
     string id = 1;
-    repeated string links = 2;
 }
+
+message PayLocalResponse {}
 
 message CapturePaymentResponse {
     string status = 1;
 }
+
+message CompleteProductResponse {}
 
 service OrderService {
     rpc CreateLocalOrder(Order) returns (ID);
@@ -161,6 +176,11 @@ service OrderService {
     rpc GetOrderByWaiter(ID) returns (OrdersResponse);
     rpc GetOrderByID(GetOrderByIDRequest) returns (OrderResponse);
     rpc AddProductsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
-    rpc PayOrder(PayOrderRequest) returns (PayOrderResponse);
+}
+
+service OrderStatusService {
+    rpc PayLocal(PayLocalRequest) returns (PayLocalResponse);
+    rpc PayDelivery(PayDeliveryRequest) returns (PayDeliveryResponse);
+    rpc CompleteProduct(CompleteProductRequest) returns (CompleteProductResponse);
     rpc CapturePayment(CapturePaymentRequest) returns (CapturePaymentResponse);
 }

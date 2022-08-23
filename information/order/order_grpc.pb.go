@@ -22,7 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ValidateOrderClient interface {
-	ValidateOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateOrderResponse, error)
+	ValidateOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
+	ValidateProducts(ctx context.Context, in *ValidateProductsRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 }
 
 type validateOrderClient struct {
@@ -33,9 +34,18 @@ func NewValidateOrderClient(cc grpc.ClientConnInterface) ValidateOrderClient {
 	return &validateOrderClient{cc}
 }
 
-func (c *validateOrderClient) ValidateOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateOrderResponse, error) {
-	out := new(ValidateOrderResponse)
+func (c *validateOrderClient) ValidateOrder(ctx context.Context, in *ValidateOrderRequest, opts ...grpc.CallOption) (*ValidateResponse, error) {
+	out := new(ValidateResponse)
 	err := c.cc.Invoke(ctx, "/proto.information.order.ValidateOrder/ValidateOrder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *validateOrderClient) ValidateProducts(ctx context.Context, in *ValidateProductsRequest, opts ...grpc.CallOption) (*ValidateResponse, error) {
+	out := new(ValidateResponse)
+	err := c.cc.Invoke(ctx, "/proto.information.order.ValidateOrder/ValidateProducts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +56,8 @@ func (c *validateOrderClient) ValidateOrder(ctx context.Context, in *ValidateOrd
 // All implementations must embed UnimplementedValidateOrderServer
 // for forward compatibility
 type ValidateOrderServer interface {
-	ValidateOrder(context.Context, *ValidateOrderRequest) (*ValidateOrderResponse, error)
+	ValidateOrder(context.Context, *ValidateOrderRequest) (*ValidateResponse, error)
+	ValidateProducts(context.Context, *ValidateProductsRequest) (*ValidateResponse, error)
 	mustEmbedUnimplementedValidateOrderServer()
 }
 
@@ -54,8 +65,11 @@ type ValidateOrderServer interface {
 type UnimplementedValidateOrderServer struct {
 }
 
-func (UnimplementedValidateOrderServer) ValidateOrder(context.Context, *ValidateOrderRequest) (*ValidateOrderResponse, error) {
+func (UnimplementedValidateOrderServer) ValidateOrder(context.Context, *ValidateOrderRequest) (*ValidateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateOrder not implemented")
+}
+func (UnimplementedValidateOrderServer) ValidateProducts(context.Context, *ValidateProductsRequest) (*ValidateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateProducts not implemented")
 }
 func (UnimplementedValidateOrderServer) mustEmbedUnimplementedValidateOrderServer() {}
 
@@ -88,6 +102,24 @@ func _ValidateOrder_ValidateOrder_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ValidateOrder_ValidateProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateProductsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ValidateOrderServer).ValidateProducts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.information.order.ValidateOrder/ValidateProducts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ValidateOrderServer).ValidateProducts(ctx, req.(*ValidateProductsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ValidateOrder_ServiceDesc is the grpc.ServiceDesc for ValidateOrder service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +130,10 @@ var ValidateOrder_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ValidateOrder",
 			Handler:    _ValidateOrder_ValidateOrder_Handler,
+		},
+		{
+			MethodName: "ValidateProducts",
+			Handler:    _ValidateOrder_ValidateProducts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

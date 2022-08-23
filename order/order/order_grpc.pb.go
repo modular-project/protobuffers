@@ -31,8 +31,6 @@ type OrderServiceClient interface {
 	GetOrderByWaiter(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrderByID(ctx context.Context, in *GetOrderByIDRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 	AddProductsToOrder(ctx context.Context, in *AddProductsToOrderRequest, opts ...grpc.CallOption) (*AddProductsToOrderResponse, error)
-	PayOrder(ctx context.Context, in *PayOrderRequest, opts ...grpc.CallOption) (*PayOrderResponse, error)
-	CapturePayment(ctx context.Context, in *CapturePaymentRequest, opts ...grpc.CallOption) (*CapturePaymentResponse, error)
 }
 
 type orderServiceClient struct {
@@ -124,24 +122,6 @@ func (c *orderServiceClient) AddProductsToOrder(ctx context.Context, in *AddProd
 	return out, nil
 }
 
-func (c *orderServiceClient) PayOrder(ctx context.Context, in *PayOrderRequest, opts ...grpc.CallOption) (*PayOrderResponse, error) {
-	out := new(PayOrderResponse)
-	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/PayOrder", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *orderServiceClient) CapturePayment(ctx context.Context, in *CapturePaymentRequest, opts ...grpc.CallOption) (*CapturePaymentResponse, error) {
-	out := new(CapturePaymentResponse)
-	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/CapturePayment", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
@@ -155,8 +135,6 @@ type OrderServiceServer interface {
 	GetOrderByWaiter(context.Context, *ID) (*OrdersResponse, error)
 	GetOrderByID(context.Context, *GetOrderByIDRequest) (*OrderResponse, error)
 	AddProductsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error)
-	PayOrder(context.Context, *PayOrderRequest) (*PayOrderResponse, error)
-	CapturePayment(context.Context, *CapturePaymentRequest) (*CapturePaymentResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -190,12 +168,6 @@ func (UnimplementedOrderServiceServer) GetOrderByID(context.Context, *GetOrderBy
 }
 func (UnimplementedOrderServiceServer) AddProductsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddProductsToOrder not implemented")
-}
-func (UnimplementedOrderServiceServer) PayOrder(context.Context, *PayOrderRequest) (*PayOrderResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PayOrder not implemented")
-}
-func (UnimplementedOrderServiceServer) CapturePayment(context.Context, *CapturePaymentRequest) (*CapturePaymentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CapturePayment not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 
@@ -372,42 +344,6 @@ func _OrderService_AddProductsToOrder_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OrderService_PayOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PayOrderRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OrderServiceServer).PayOrder(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.order.order.OrderService/PayOrder",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).PayOrder(ctx, req.(*PayOrderRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _OrderService_CapturePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CapturePaymentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OrderServiceServer).CapturePayment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.order.order.OrderService/CapturePayment",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).CapturePayment(ctx, req.(*CapturePaymentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -451,13 +387,199 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "AddProductsToOrder",
 			Handler:    _OrderService_AddProductsToOrder_Handler,
 		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "order/order.proto",
+}
+
+// OrderStatusServiceClient is the client API for OrderStatusService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type OrderStatusServiceClient interface {
+	PayLocal(ctx context.Context, in *PayLocalRequest, opts ...grpc.CallOption) (*PayLocalResponse, error)
+	PayDelivery(ctx context.Context, in *PayDeliveryRequest, opts ...grpc.CallOption) (*PayDeliveryResponse, error)
+	CompleteProduct(ctx context.Context, in *CompleteProductRequest, opts ...grpc.CallOption) (*CompleteProductResponse, error)
+	CapturePayment(ctx context.Context, in *CapturePaymentRequest, opts ...grpc.CallOption) (*CapturePaymentResponse, error)
+}
+
+type orderStatusServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewOrderStatusServiceClient(cc grpc.ClientConnInterface) OrderStatusServiceClient {
+	return &orderStatusServiceClient{cc}
+}
+
+func (c *orderStatusServiceClient) PayLocal(ctx context.Context, in *PayLocalRequest, opts ...grpc.CallOption) (*PayLocalResponse, error) {
+	out := new(PayLocalResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderStatusService/PayLocal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderStatusServiceClient) PayDelivery(ctx context.Context, in *PayDeliveryRequest, opts ...grpc.CallOption) (*PayDeliveryResponse, error) {
+	out := new(PayDeliveryResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderStatusService/PayDelivery", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderStatusServiceClient) CompleteProduct(ctx context.Context, in *CompleteProductRequest, opts ...grpc.CallOption) (*CompleteProductResponse, error) {
+	out := new(CompleteProductResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderStatusService/CompleteProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *orderStatusServiceClient) CapturePayment(ctx context.Context, in *CapturePaymentRequest, opts ...grpc.CallOption) (*CapturePaymentResponse, error) {
+	out := new(CapturePaymentResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderStatusService/CapturePayment", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// OrderStatusServiceServer is the server API for OrderStatusService service.
+// All implementations must embed UnimplementedOrderStatusServiceServer
+// for forward compatibility
+type OrderStatusServiceServer interface {
+	PayLocal(context.Context, *PayLocalRequest) (*PayLocalResponse, error)
+	PayDelivery(context.Context, *PayDeliveryRequest) (*PayDeliveryResponse, error)
+	CompleteProduct(context.Context, *CompleteProductRequest) (*CompleteProductResponse, error)
+	CapturePayment(context.Context, *CapturePaymentRequest) (*CapturePaymentResponse, error)
+	mustEmbedUnimplementedOrderStatusServiceServer()
+}
+
+// UnimplementedOrderStatusServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedOrderStatusServiceServer struct {
+}
+
+func (UnimplementedOrderStatusServiceServer) PayLocal(context.Context, *PayLocalRequest) (*PayLocalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PayLocal not implemented")
+}
+func (UnimplementedOrderStatusServiceServer) PayDelivery(context.Context, *PayDeliveryRequest) (*PayDeliveryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PayDelivery not implemented")
+}
+func (UnimplementedOrderStatusServiceServer) CompleteProduct(context.Context, *CompleteProductRequest) (*CompleteProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompleteProduct not implemented")
+}
+func (UnimplementedOrderStatusServiceServer) CapturePayment(context.Context, *CapturePaymentRequest) (*CapturePaymentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CapturePayment not implemented")
+}
+func (UnimplementedOrderStatusServiceServer) mustEmbedUnimplementedOrderStatusServiceServer() {}
+
+// UnsafeOrderStatusServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to OrderStatusServiceServer will
+// result in compilation errors.
+type UnsafeOrderStatusServiceServer interface {
+	mustEmbedUnimplementedOrderStatusServiceServer()
+}
+
+func RegisterOrderStatusServiceServer(s grpc.ServiceRegistrar, srv OrderStatusServiceServer) {
+	s.RegisterService(&OrderStatusService_ServiceDesc, srv)
+}
+
+func _OrderStatusService_PayLocal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PayLocalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderStatusServiceServer).PayLocal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderStatusService/PayLocal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderStatusServiceServer).PayLocal(ctx, req.(*PayLocalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderStatusService_PayDelivery_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PayDeliveryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderStatusServiceServer).PayDelivery(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderStatusService/PayDelivery",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderStatusServiceServer).PayDelivery(ctx, req.(*PayDeliveryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderStatusService_CompleteProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderStatusServiceServer).CompleteProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderStatusService/CompleteProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderStatusServiceServer).CompleteProduct(ctx, req.(*CompleteProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OrderStatusService_CapturePayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CapturePaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderStatusServiceServer).CapturePayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderStatusService/CapturePayment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderStatusServiceServer).CapturePayment(ctx, req.(*CapturePaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// OrderStatusService_ServiceDesc is the grpc.ServiceDesc for OrderStatusService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var OrderStatusService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.order.order.OrderStatusService",
+	HandlerType: (*OrderStatusServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "PayOrder",
-			Handler:    _OrderService_PayOrder_Handler,
+			MethodName: "PayLocal",
+			Handler:    _OrderStatusService_PayLocal_Handler,
+		},
+		{
+			MethodName: "PayDelivery",
+			Handler:    _OrderStatusService_PayDelivery_Handler,
+		},
+		{
+			MethodName: "CompleteProduct",
+			Handler:    _OrderStatusService_CompleteProduct_Handler,
 		},
 		{
 			MethodName: "CapturePayment",
-			Handler:    _OrderService_CapturePayment_Handler,
+			Handler:    _OrderStatusService_CapturePayment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
