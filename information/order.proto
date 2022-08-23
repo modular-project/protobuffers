@@ -10,8 +10,15 @@ message ValidateOrderRequest {
     proto.order.order.Order order = 1;
 }
 
-message ValidateOrderResponse {}
+message ValidateProductsRequest{
+    proto.order.order.OrderProduct order_products = 1;
+}
+
+message ValidateResponse {
+    float total = 1;
+}
 
 service ValidateOrder {
-    rpc ValidateOrder(ValidateOrderRequest) returns (ValidateOrderResponse);
+    rpc ValidateOrder(ValidateOrderRequest) returns (ValidateResponse);
+    rpc ValidateProducts(ValidateProductsRequest) returns (ValidateResponse);
 }
