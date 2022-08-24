@@ -11,7 +11,7 @@ message ValidateOrderRequest {
 }
 
 message ValidateProductsRequest{
-    proto.order.order.OrderProduct order_products = 1;
+    repeated proto.order.order.OrderProduct order_products = 1;
 }
 
 message ValidateResponse {
