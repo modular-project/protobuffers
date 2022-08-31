@@ -44,6 +44,10 @@ message RequestGetAll{}
 
 message ResponseDelete{}
 
+message RequestGetByBase{
+    string base = 1;
+}
+
 service ProductService{
     rpc Create(Product) returns (Response);
     rpc Get(RequestById) returns (Product);
@@ -51,4 +55,5 @@ service ProductService{
     rpc GetInBatch(RequestGetInBatch) returns (ResponseGetAll);
     rpc Update(RequestUpdate) returns (Response);
     rpc Delete(RequestById) returns (ResponseDelete);
+    rpc GetByBase(RequestGetByBase) returns (ResponseGetAll);
 }
