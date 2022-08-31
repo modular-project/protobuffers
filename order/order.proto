@@ -80,7 +80,7 @@ message Order {
 }
 
 message RemoteOrder {
-    uint64 address_id =1;
+    string address_id =1;
     uint64 user_id =2; 
 }
 
