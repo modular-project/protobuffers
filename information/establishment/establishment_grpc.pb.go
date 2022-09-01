@@ -27,6 +27,7 @@ type EstablishmentServiceClient interface {
 	GetAll(ctx context.Context, in *RequestGetAll, opts ...grpc.CallOption) (*ResponseGetAll, error)
 	Update(ctx context.Context, in *RequestUpdate, opts ...grpc.CallOption) (*Response, error)
 	Delete(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*ResponseDelete, error)
+	GetByAddress(ctx context.Context, in *RequestGetByAddress, opts ...grpc.CallOption) (*Response, error)
 }
 
 type establishmentServiceClient struct {
@@ -82,6 +83,15 @@ func (c *establishmentServiceClient) Delete(ctx context.Context, in *RequestById
 	return out, nil
 }
 
+func (c *establishmentServiceClient) GetByAddress(ctx context.Context, in *RequestGetByAddress, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, "/proto.information.establishment.EstablishmentService/GetByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EstablishmentServiceServer is the server API for EstablishmentService service.
 // All implementations must embed UnimplementedEstablishmentServiceServer
 // for forward compatibility
@@ -91,6 +101,7 @@ type EstablishmentServiceServer interface {
 	GetAll(context.Context, *RequestGetAll) (*ResponseGetAll, error)
 	Update(context.Context, *RequestUpdate) (*Response, error)
 	Delete(context.Context, *RequestById) (*ResponseDelete, error)
+	GetByAddress(context.Context, *RequestGetByAddress) (*Response, error)
 	mustEmbedUnimplementedEstablishmentServiceServer()
 }
 
@@ -112,6 +123,9 @@ func (UnimplementedEstablishmentServiceServer) Update(context.Context, *RequestU
 }
 func (UnimplementedEstablishmentServiceServer) Delete(context.Context, *RequestById) (*ResponseDelete, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedEstablishmentServiceServer) GetByAddress(context.Context, *RequestGetByAddress) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByAddress not implemented")
 }
 func (UnimplementedEstablishmentServiceServer) mustEmbedUnimplementedEstablishmentServiceServer() {}
 
@@ -216,6 +230,24 @@ func _EstablishmentService_Delete_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EstablishmentService_GetByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RequestGetByAddress)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EstablishmentServiceServer).GetByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.information.establishment.EstablishmentService/GetByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EstablishmentServiceServer).GetByAddress(ctx, req.(*RequestGetByAddress))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EstablishmentService_ServiceDesc is the grpc.ServiceDesc for EstablishmentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var EstablishmentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _EstablishmentService_Delete_Handler,
+		},
+		{
+			MethodName: "GetByAddress",
+			Handler:    _EstablishmentService_GetByAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
