@@ -10,6 +10,7 @@ message Product {
     string description = 3;
     float price = 4;
     uint64 id = 5;
+    uint64 base_id = 6;
 }
 
 message RequestById {
