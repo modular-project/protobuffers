@@ -18,86 +18,86 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ValidateOrderClient is the client API for ValidateOrder service.
+// ClassImgServiceClient is the client API for ClassImgService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ValidateOrderClient interface {
+type ClassImgServiceClient interface {
 	ClassImg(ctx context.Context, in *RequestClassImg, opts ...grpc.CallOption) (*ResponseClassImg, error)
 }
 
-type validateOrderClient struct {
+type classImgServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewValidateOrderClient(cc grpc.ClientConnInterface) ValidateOrderClient {
-	return &validateOrderClient{cc}
+func NewClassImgServiceClient(cc grpc.ClientConnInterface) ClassImgServiceClient {
+	return &classImgServiceClient{cc}
 }
 
-func (c *validateOrderClient) ClassImg(ctx context.Context, in *RequestClassImg, opts ...grpc.CallOption) (*ResponseClassImg, error) {
+func (c *classImgServiceClient) ClassImg(ctx context.Context, in *RequestClassImg, opts ...grpc.CallOption) (*ResponseClassImg, error) {
 	out := new(ResponseClassImg)
-	err := c.cc.Invoke(ctx, "/ValidateOrder/ClassImg", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/ClassImgService/ClassImg", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ValidateOrderServer is the server API for ValidateOrder service.
-// All implementations must embed UnimplementedValidateOrderServer
+// ClassImgServiceServer is the server API for ClassImgService service.
+// All implementations must embed UnimplementedClassImgServiceServer
 // for forward compatibility
-type ValidateOrderServer interface {
+type ClassImgServiceServer interface {
 	ClassImg(context.Context, *RequestClassImg) (*ResponseClassImg, error)
-	mustEmbedUnimplementedValidateOrderServer()
+	mustEmbedUnimplementedClassImgServiceServer()
 }
 
-// UnimplementedValidateOrderServer must be embedded to have forward compatible implementations.
-type UnimplementedValidateOrderServer struct {
+// UnimplementedClassImgServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedClassImgServiceServer struct {
 }
 
-func (UnimplementedValidateOrderServer) ClassImg(context.Context, *RequestClassImg) (*ResponseClassImg, error) {
+func (UnimplementedClassImgServiceServer) ClassImg(context.Context, *RequestClassImg) (*ResponseClassImg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClassImg not implemented")
 }
-func (UnimplementedValidateOrderServer) mustEmbedUnimplementedValidateOrderServer() {}
+func (UnimplementedClassImgServiceServer) mustEmbedUnimplementedClassImgServiceServer() {}
 
-// UnsafeValidateOrderServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ValidateOrderServer will
+// UnsafeClassImgServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ClassImgServiceServer will
 // result in compilation errors.
-type UnsafeValidateOrderServer interface {
-	mustEmbedUnimplementedValidateOrderServer()
+type UnsafeClassImgServiceServer interface {
+	mustEmbedUnimplementedClassImgServiceServer()
 }
 
-func RegisterValidateOrderServer(s grpc.ServiceRegistrar, srv ValidateOrderServer) {
-	s.RegisterService(&ValidateOrder_ServiceDesc, srv)
+func RegisterClassImgServiceServer(s grpc.ServiceRegistrar, srv ClassImgServiceServer) {
+	s.RegisterService(&ClassImgService_ServiceDesc, srv)
 }
 
-func _ValidateOrder_ClassImg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ClassImgService_ClassImg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RequestClassImg)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ValidateOrderServer).ClassImg(ctx, in)
+		return srv.(ClassImgServiceServer).ClassImg(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/ValidateOrder/ClassImg",
+		FullMethod: "/ClassImgService/ClassImg",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ValidateOrderServer).ClassImg(ctx, req.(*RequestClassImg))
+		return srv.(ClassImgServiceServer).ClassImg(ctx, req.(*RequestClassImg))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ValidateOrder_ServiceDesc is the grpc.ServiceDesc for ValidateOrder service.
+// ClassImgService_ServiceDesc is the grpc.ServiceDesc for ClassImgService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ValidateOrder_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "ValidateOrder",
-	HandlerType: (*ValidateOrderServer)(nil),
+var ClassImgService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "ClassImgService",
+	HandlerType: (*ClassImgServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "ClassImg",
-			Handler:    _ValidateOrder_ClassImg_Handler,
+			Handler:    _ClassImgService_ClassImg_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

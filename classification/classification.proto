@@ -11,6 +11,6 @@ message ResponseClassImg {
     //uint32 accuracy = 2;
 }
 
-service ValidateOrder {
+service ClassImgService {
     rpc ClassImg(RequestClassImg) returns (ResponseClassImg);
 }
