@@ -9,8 +9,20 @@ message Default{
     uint32 offset = 2;
 }
 
+message OrderBy {
+    string key = 1;
+    int32 val = 2;
+}
+
+message Query {
+    string key = 1;
+    string val = 2;
+}
+
 message SearchAddress{
     Default default = 1;
+    repeated OrderBy order_by = 2;
+    repeated Query query= 3;
 }
 
 message Location {
