@@ -5,6 +5,7 @@ package proto.information.establishment;
 option go_package = "information/establishment/";
 
 message Establishment {
+    uint64 id = 1;
     string address_id = 2;
     uint32 quantity = 3;
 }
