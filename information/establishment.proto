@@ -56,5 +56,5 @@ service EstablishmentService {
     rpc GetAll(RequestGetAll) returns (ResponseGetAll);
     rpc Update(RequestUpdate) returns (Response);
     rpc Delete(RequestById) returns (ResponseDelete);
-    rpc GetByAddress(RequestGetByAddress) returns (Response);
+    rpc GetByAddress(RequestGetByAddress) returns (ResponseAddress);
 }

@@ -27,7 +27,7 @@ type EstablishmentServiceClient interface {
 	GetAll(ctx context.Context, in *RequestGetAll, opts ...grpc.CallOption) (*ResponseGetAll, error)
 	Update(ctx context.Context, in *RequestUpdate, opts ...grpc.CallOption) (*Response, error)
 	Delete(ctx context.Context, in *RequestById, opts ...grpc.CallOption) (*ResponseDelete, error)
-	GetByAddress(ctx context.Context, in *RequestGetByAddress, opts ...grpc.CallOption) (*Response, error)
+	GetByAddress(ctx context.Context, in *RequestGetByAddress, opts ...grpc.CallOption) (*ResponseAddress, error)
 }
 
 type establishmentServiceClient struct {
@@ -83,8 +83,8 @@ func (c *establishmentServiceClient) Delete(ctx context.Context, in *RequestById
 	return out, nil
 }
 
-func (c *establishmentServiceClient) GetByAddress(ctx context.Context, in *RequestGetByAddress, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
+func (c *establishmentServiceClient) GetByAddress(ctx context.Context, in *RequestGetByAddress, opts ...grpc.CallOption) (*ResponseAddress, error) {
+	out := new(ResponseAddress)
 	err := c.cc.Invoke(ctx, "/proto.information.establishment.EstablishmentService/GetByAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ type EstablishmentServiceServer interface {
 	GetAll(context.Context, *RequestGetAll) (*ResponseGetAll, error)
 	Update(context.Context, *RequestUpdate) (*Response, error)
 	Delete(context.Context, *RequestById) (*ResponseDelete, error)
-	GetByAddress(context.Context, *RequestGetByAddress) (*Response, error)
+	GetByAddress(context.Context, *RequestGetByAddress) (*ResponseAddress, error)
 	mustEmbedUnimplementedEstablishmentServiceServer()
 }
 
@@ -124,7 +124,7 @@ func (UnimplementedEstablishmentServiceServer) Update(context.Context, *RequestU
 func (UnimplementedEstablishmentServiceServer) Delete(context.Context, *RequestById) (*ResponseDelete, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedEstablishmentServiceServer) GetByAddress(context.Context, *RequestGetByAddress) (*Response, error) {
+func (UnimplementedEstablishmentServiceServer) GetByAddress(context.Context, *RequestGetByAddress) (*ResponseAddress, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByAddress not implemented")
 }
 func (UnimplementedEstablishmentServiceServer) mustEmbedUnimplementedEstablishmentServiceServer() {}
