@@ -167,6 +167,14 @@ message CapturePaymentResponse {
 
 message CompleteProductResponse {}
 
+message DeliverProductRequest{
+    repeated uint64 id = 1;
+}
+
+message DeliverProductResponse {
+
+}
+
 service OrderService {
     rpc CreateLocalOrder(Order) returns (ID);
     rpc CreateDeliveryOrder(Order) returns (ID);
@@ -184,4 +192,5 @@ service OrderStatusService {
     rpc PayDelivery(PayDeliveryRequest) returns (PayDeliveryResponse);
     rpc CompleteProduct(CompleteProductRequest) returns (CompleteProductResponse);
     rpc CapturePayment(CapturePaymentRequest) returns (CapturePaymentResponse);
+    rpc DeliverProducts(DeliverProductRequest) returns (DeliverProductResponse);
 }
