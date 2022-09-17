@@ -175,14 +175,20 @@ message DeliverProductResponse {
 
 }
 
+message CreateResponse {
+    uint64 order_id = 1;
+    repeated uint64 product_ids = 2;
+}
+
 service OrderService {
-    rpc CreateLocalOrder(Order) returns (ID);
-    rpc CreateDeliveryOrder(Order) returns (ID);
+    rpc CreateLocalOrder(Order) returns (CreateResponse);
+    rpc CreateDeliveryOrder(Order) returns (CreateResponse);
     rpc GetOrdersByUser(OrdersByUserRequest) returns (OrdersResponse);
     rpc GetOrdersByKitchen(ID) returns (OrderProductsResponse);
     rpc GetOrders(OrdersRequest) returns (OrdersResponse);
     rpc GetOrdersByEstablishment(OrdersRequest) returns (OrdersResponse);
     rpc GetOrderByWaiter(ID) returns (OrdersResponse);
+    rpc GetOrderPendingByWaiter(ID) returns (OrdersResponse);
     rpc GetOrderByID(GetOrderByIDRequest) returns (OrderResponse);
     rpc AddProductsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
 }
