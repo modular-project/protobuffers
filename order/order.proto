@@ -188,6 +188,7 @@ service OrderService {
     rpc GetOrders(OrdersRequest) returns (OrdersResponse);
     rpc GetOrdersByEstablishment(OrdersRequest) returns (OrdersResponse);
     rpc GetOrderByWaiter(ID) returns (OrdersResponse);
+    rpc GetOrderPendingByWaiter(ID) returns (OrdersResponse);
     rpc GetOrderByID(GetOrderByIDRequest) returns (OrderResponse);
     rpc AddProductsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
 }
