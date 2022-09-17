@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrderServiceClient interface {
-	CreateLocalOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*ID, error)
-	CreateDeliveryOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*ID, error)
+	CreateLocalOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*CreateResponse, error)
+	CreateDeliveryOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*CreateResponse, error)
 	GetOrdersByUser(ctx context.Context, in *OrdersByUserRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrdersByKitchen(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrderProductsResponse, error)
 	GetOrders(ctx context.Context, in *OrdersRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
@@ -41,8 +41,8 @@ func NewOrderServiceClient(cc grpc.ClientConnInterface) OrderServiceClient {
 	return &orderServiceClient{cc}
 }
 
-func (c *orderServiceClient) CreateLocalOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*ID, error) {
-	out := new(ID)
+func (c *orderServiceClient) CreateLocalOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*CreateResponse, error) {
+	out := new(CreateResponse)
 	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/CreateLocalOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -50,8 +50,8 @@ func (c *orderServiceClient) CreateLocalOrder(ctx context.Context, in *Order, op
 	return out, nil
 }
 
-func (c *orderServiceClient) CreateDeliveryOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*ID, error) {
-	out := new(ID)
+func (c *orderServiceClient) CreateDeliveryOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*CreateResponse, error) {
+	out := new(CreateResponse)
 	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/CreateDeliveryOrder", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -126,8 +126,8 @@ func (c *orderServiceClient) AddProductsToOrder(ctx context.Context, in *AddProd
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
 type OrderServiceServer interface {
-	CreateLocalOrder(context.Context, *Order) (*ID, error)
-	CreateDeliveryOrder(context.Context, *Order) (*ID, error)
+	CreateLocalOrder(context.Context, *Order) (*CreateResponse, error)
+	CreateDeliveryOrder(context.Context, *Order) (*CreateResponse, error)
 	GetOrdersByUser(context.Context, *OrdersByUserRequest) (*OrdersResponse, error)
 	GetOrdersByKitchen(context.Context, *ID) (*OrderProductsResponse, error)
 	GetOrders(context.Context, *OrdersRequest) (*OrdersResponse, error)
@@ -142,10 +142,10 @@ type OrderServiceServer interface {
 type UnimplementedOrderServiceServer struct {
 }
 
-func (UnimplementedOrderServiceServer) CreateLocalOrder(context.Context, *Order) (*ID, error) {
+func (UnimplementedOrderServiceServer) CreateLocalOrder(context.Context, *Order) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateLocalOrder not implemented")
 }
-func (UnimplementedOrderServiceServer) CreateDeliveryOrder(context.Context, *Order) (*ID, error) {
+func (UnimplementedOrderServiceServer) CreateDeliveryOrder(context.Context, *Order) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateDeliveryOrder not implemented")
 }
 func (UnimplementedOrderServiceServer) GetOrdersByUser(context.Context, *OrdersByUserRequest) (*OrdersResponse, error) {
