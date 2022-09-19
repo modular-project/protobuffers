@@ -25,7 +25,7 @@ type OrderServiceClient interface {
 	CreateLocalOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*CreateResponse, error)
 	CreateDeliveryOrder(ctx context.Context, in *Order, opts ...grpc.CallOption) (*CreateResponse, error)
 	GetOrdersByUser(ctx context.Context, in *OrdersByUserRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
-	GetOrdersByKitchen(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrderProductsResponse, error)
+	GetOrdersByKitchen(ctx context.Context, in *RequestKitchen, opts ...grpc.CallOption) (*OrderProductsResponse, error)
 	GetOrders(ctx context.Context, in *OrdersRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrdersByEstablishment(ctx context.Context, in *OrdersRequest, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrderByWaiter(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrdersResponse, error)
@@ -69,7 +69,7 @@ func (c *orderServiceClient) GetOrdersByUser(ctx context.Context, in *OrdersByUs
 	return out, nil
 }
 
-func (c *orderServiceClient) GetOrdersByKitchen(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrderProductsResponse, error) {
+func (c *orderServiceClient) GetOrdersByKitchen(ctx context.Context, in *RequestKitchen, opts ...grpc.CallOption) (*OrderProductsResponse, error) {
 	out := new(OrderProductsResponse)
 	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/GetOrdersByKitchen", in, out, opts...)
 	if err != nil {
@@ -139,7 +139,7 @@ type OrderServiceServer interface {
 	CreateLocalOrder(context.Context, *Order) (*CreateResponse, error)
 	CreateDeliveryOrder(context.Context, *Order) (*CreateResponse, error)
 	GetOrdersByUser(context.Context, *OrdersByUserRequest) (*OrdersResponse, error)
-	GetOrdersByKitchen(context.Context, *ID) (*OrderProductsResponse, error)
+	GetOrdersByKitchen(context.Context, *RequestKitchen) (*OrderProductsResponse, error)
 	GetOrders(context.Context, *OrdersRequest) (*OrdersResponse, error)
 	GetOrdersByEstablishment(context.Context, *OrdersRequest) (*OrdersResponse, error)
 	GetOrderByWaiter(context.Context, *ID) (*OrdersResponse, error)
@@ -162,7 +162,7 @@ func (UnimplementedOrderServiceServer) CreateDeliveryOrder(context.Context, *Ord
 func (UnimplementedOrderServiceServer) GetOrdersByUser(context.Context, *OrdersByUserRequest) (*OrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrdersByUser not implemented")
 }
-func (UnimplementedOrderServiceServer) GetOrdersByKitchen(context.Context, *ID) (*OrderProductsResponse, error) {
+func (UnimplementedOrderServiceServer) GetOrdersByKitchen(context.Context, *RequestKitchen) (*OrderProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrdersByKitchen not implemented")
 }
 func (UnimplementedOrderServiceServer) GetOrders(context.Context, *OrdersRequest) (*OrdersResponse, error) {
@@ -251,7 +251,7 @@ func _OrderService_GetOrdersByUser_Handler(srv interface{}, ctx context.Context,
 }
 
 func _OrderService_GetOrdersByKitchen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ID)
+	in := new(RequestKitchen)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -263,7 +263,7 @@ func _OrderService_GetOrdersByKitchen_Handler(srv interface{}, ctx context.Conte
 		FullMethod: "/proto.order.order.OrderService/GetOrdersByKitchen",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrderServiceServer).GetOrdersByKitchen(ctx, req.(*ID))
+		return srv.(OrderServiceServer).GetOrdersByKitchen(ctx, req.(*RequestKitchen))
 	}
 	return interceptor(ctx, in, info, handler)
 }

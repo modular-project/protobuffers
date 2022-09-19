@@ -180,11 +180,16 @@ message CreateResponse {
     repeated uint64 product_ids = 2;
 }
 
+message RequestKitchen {
+    uint64 id = 1;
+    uint64 last = 2;
+}
+
 service OrderService {
     rpc CreateLocalOrder(Order) returns (CreateResponse);
     rpc CreateDeliveryOrder(Order) returns (CreateResponse);
     rpc GetOrdersByUser(OrdersByUserRequest) returns (OrdersResponse);
-    rpc GetOrdersByKitchen(ID) returns (OrderProductsResponse);
+    rpc GetOrdersByKitchen(RequestKitchen) returns (OrderProductsResponse);
     rpc GetOrders(OrdersRequest) returns (OrdersResponse);
     rpc GetOrdersByEstablishment(OrdersRequest) returns (OrdersResponse);
     rpc GetOrderByWaiter(ID) returns (OrdersResponse);
