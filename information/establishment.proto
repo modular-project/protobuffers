@@ -48,7 +48,9 @@ message ResponseAddress{
     uint32 quantity = 2;
 }
 
-message ResponseDelete{}
+message ResponseDelete{
+    string address_id = 1;
+}
 
 service EstablishmentService {
     rpc Create(RequestCreate) returns (Response);
