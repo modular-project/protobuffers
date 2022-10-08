@@ -437,6 +437,7 @@ type OrderStatusServiceClient interface {
 	CompleteProduct(ctx context.Context, in *CompleteProductRequest, opts ...grpc.CallOption) (*CompleteProductResponse, error)
 	CapturePayment(ctx context.Context, in *CapturePaymentRequest, opts ...grpc.CallOption) (*CapturePaymentResponse, error)
 	DeliverProducts(ctx context.Context, in *DeliverProductRequest, opts ...grpc.CallOption) (*DeliverProductResponse, error)
+	CancelOrders(ctx context.Context, in *CancelOrdersRequest, opts ...grpc.CallOption) (*CancelOrdersResponse, error)
 }
 
 type orderStatusServiceClient struct {
@@ -492,6 +493,15 @@ func (c *orderStatusServiceClient) DeliverProducts(ctx context.Context, in *Deli
 	return out, nil
 }
 
+func (c *orderStatusServiceClient) CancelOrders(ctx context.Context, in *CancelOrdersRequest, opts ...grpc.CallOption) (*CancelOrdersResponse, error) {
+	out := new(CancelOrdersResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderStatusService/CancelOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderStatusServiceServer is the server API for OrderStatusService service.
 // All implementations must embed UnimplementedOrderStatusServiceServer
 // for forward compatibility
@@ -501,6 +511,7 @@ type OrderStatusServiceServer interface {
 	CompleteProduct(context.Context, *CompleteProductRequest) (*CompleteProductResponse, error)
 	CapturePayment(context.Context, *CapturePaymentRequest) (*CapturePaymentResponse, error)
 	DeliverProducts(context.Context, *DeliverProductRequest) (*DeliverProductResponse, error)
+	CancelOrders(context.Context, *CancelOrdersRequest) (*CancelOrdersResponse, error)
 	mustEmbedUnimplementedOrderStatusServiceServer()
 }
 
@@ -522,6 +533,9 @@ func (UnimplementedOrderStatusServiceServer) CapturePayment(context.Context, *Ca
 }
 func (UnimplementedOrderStatusServiceServer) DeliverProducts(context.Context, *DeliverProductRequest) (*DeliverProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeliverProducts not implemented")
+}
+func (UnimplementedOrderStatusServiceServer) CancelOrders(context.Context, *CancelOrdersRequest) (*CancelOrdersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelOrders not implemented")
 }
 func (UnimplementedOrderStatusServiceServer) mustEmbedUnimplementedOrderStatusServiceServer() {}
 
@@ -626,6 +640,24 @@ func _OrderStatusService_DeliverProducts_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderStatusService_CancelOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelOrdersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderStatusServiceServer).CancelOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderStatusService/CancelOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderStatusServiceServer).CancelOrders(ctx, req.(*CancelOrdersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderStatusService_ServiceDesc is the grpc.ServiceDesc for OrderStatusService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -652,6 +684,10 @@ var OrderStatusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeliverProducts",
 			Handler:    _OrderStatusService_DeliverProducts_Handler,
+		},
+		{
+			MethodName: "CancelOrders",
+			Handler:    _OrderStatusService_CancelOrders_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

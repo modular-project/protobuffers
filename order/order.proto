@@ -133,7 +133,13 @@ message CompleteProductRequest {
     uint64 id = 1;
 }
 
+message CancelOrdersRequest {
+    repeated uint64 id = 1;
+}
+
 // Responses
+
+message CancelOrdersResponse {}
 
 message OrdersResponse {
     repeated Order orders =1;
@@ -204,4 +210,5 @@ service OrderStatusService {
     rpc CompleteProduct(CompleteProductRequest) returns (CompleteProductResponse);
     rpc CapturePayment(CapturePaymentRequest) returns (CapturePaymentResponse);
     rpc DeliverProducts(DeliverProductRequest) returns (DeliverProductResponse);
+    rpc CancelOrders(CancelOrdersRequest) returns (CancelOrdersResponse);
 }
