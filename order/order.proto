@@ -55,6 +55,8 @@ message SearchOrders {
     repeated OrderType types = 5;
     repeated uint64 users = 6;
     repeated float range = 7;
+    string start = 8;
+    string end = 9;
 }
 
 // Structs for Orders
@@ -88,6 +90,7 @@ message RemoteOrder {
 message LocalOrder {
     uint64 table_id = 1;
     uint64 employee_id = 2;
+    float tip = 3;
 }
 
 // Request
@@ -136,6 +139,12 @@ message CompleteProductRequest {
 message CancelOrdersRequest {
     repeated uint64 ids = 1;
     uint64 user_id = 2;
+}
+
+message GetTipsRequest {
+    uint64 employee_id = 1;
+    string start = 2;
+    string end = 3;
 }
 
 // Responses
