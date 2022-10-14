@@ -150,7 +150,7 @@ message GetTipsRequest {
 // Responses
 
 message GetTipsResponse {
-    uint64 tips = 1;
+    float tips = 1;
 }
 
 message CancelOrdersResponse {}
