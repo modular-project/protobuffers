@@ -149,6 +149,10 @@ message GetTipsRequest {
 
 // Responses
 
+message GetTipsResponse {
+    uint64 tips = 1;
+}
+
 message CancelOrdersResponse {}
 
 message OrdersResponse {
@@ -212,6 +216,7 @@ service OrderService {
     rpc GetOrderPendingByWaiter(ID) returns (OrdersResponse);
     rpc GetOrderByID(GetOrderByIDRequest) returns (OrderResponse);
     rpc AddProductsToOrder(AddProductsToOrderRequest) returns (AddProductsToOrderResponse);
+    rpc GetTips(GetTipsRequest) returns (GetTipsResponse);
 }
 
 service OrderStatusService {

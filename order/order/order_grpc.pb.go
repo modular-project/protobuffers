@@ -32,6 +32,7 @@ type OrderServiceClient interface {
 	GetOrderPendingByWaiter(ctx context.Context, in *ID, opts ...grpc.CallOption) (*OrdersResponse, error)
 	GetOrderByID(ctx context.Context, in *GetOrderByIDRequest, opts ...grpc.CallOption) (*OrderResponse, error)
 	AddProductsToOrder(ctx context.Context, in *AddProductsToOrderRequest, opts ...grpc.CallOption) (*AddProductsToOrderResponse, error)
+	GetTips(ctx context.Context, in *GetTipsRequest, opts ...grpc.CallOption) (*GetTipsResponse, error)
 }
 
 type orderServiceClient struct {
@@ -132,6 +133,15 @@ func (c *orderServiceClient) AddProductsToOrder(ctx context.Context, in *AddProd
 	return out, nil
 }
 
+func (c *orderServiceClient) GetTips(ctx context.Context, in *GetTipsRequest, opts ...grpc.CallOption) (*GetTipsResponse, error) {
+	out := new(GetTipsResponse)
+	err := c.cc.Invoke(ctx, "/proto.order.order.OrderService/GetTips", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OrderServiceServer is the server API for OrderService service.
 // All implementations must embed UnimplementedOrderServiceServer
 // for forward compatibility
@@ -146,6 +156,7 @@ type OrderServiceServer interface {
 	GetOrderPendingByWaiter(context.Context, *ID) (*OrdersResponse, error)
 	GetOrderByID(context.Context, *GetOrderByIDRequest) (*OrderResponse, error)
 	AddProductsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error)
+	GetTips(context.Context, *GetTipsRequest) (*GetTipsResponse, error)
 	mustEmbedUnimplementedOrderServiceServer()
 }
 
@@ -182,6 +193,9 @@ func (UnimplementedOrderServiceServer) GetOrderByID(context.Context, *GetOrderBy
 }
 func (UnimplementedOrderServiceServer) AddProductsToOrder(context.Context, *AddProductsToOrderRequest) (*AddProductsToOrderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddProductsToOrder not implemented")
+}
+func (UnimplementedOrderServiceServer) GetTips(context.Context, *GetTipsRequest) (*GetTipsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTips not implemented")
 }
 func (UnimplementedOrderServiceServer) mustEmbedUnimplementedOrderServiceServer() {}
 
@@ -376,6 +390,24 @@ func _OrderService_AddProductsToOrder_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OrderService_GetTips_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTipsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OrderServiceServer).GetTips(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.order.order.OrderService/GetTips",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OrderServiceServer).GetTips(ctx, req.(*GetTipsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OrderService_ServiceDesc is the grpc.ServiceDesc for OrderService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,6 +454,10 @@ var OrderService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddProductsToOrder",
 			Handler:    _OrderService_AddProductsToOrder_Handler,
+		},
+		{
+			MethodName: "GetTips",
+			Handler:    _OrderService_GetTips_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
